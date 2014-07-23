@@ -67,7 +67,10 @@
     "lodash": "*",
     "lru-cache": "*",
     "mocha": "*",
+    "powerset": "*",
     "queue-async": "*",
+    "rollkuchen": "git+https://github.com/forivall/rollkuchen.git#master",
+    "through2": "*",
     "webpack": "git+https://github.com/forivall/webpack#master",
     "wrench": "*"
   },

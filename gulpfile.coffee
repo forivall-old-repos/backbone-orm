@@ -76,3 +76,7 @@ gulp.task 'zip', ['minify'], (callback) ->
     .pipe(gulp.dest('./'))
 
 gulp.task 'release', ['build', 'zip'], ->
+
+gulp.task 'rewrite-option-sets', [], ->
+  rewrite = require('./test/bin/rewrite_option_sets')
+  return gulp.src('./src/lib/utils.coffee').pipe(rewrite.stream()).pipe(gulp.dest('./src/lib'))
