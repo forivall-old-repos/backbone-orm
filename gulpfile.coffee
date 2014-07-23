@@ -80,3 +80,12 @@ gulp.task 'release', ['build', 'zip'], ->
 gulp.task 'rewrite-option-sets', [], ->
   rewrite = require('./test/bin/rewrite_option_sets')
   return gulp.src('./src/lib/utils.coffee').pipe(rewrite.stream()).pipe(gulp.dest('./src/lib'))
+
+gulp.task 'one-time-rewrite-option-sets', [], ->
+  rewrite = require('./test/bin/rewrite_option_sets')
+  # return gulp.src('./test/spec/sync/flat/page.tests.coffee')
+  #   .pipe(rewrite.stream({replacement: 'BackboneORM.Utils._getTestOptionSets()'}))
+  #   .pipe(gulp.dest('./test/spec/sync/flat'))
+  return gulp.src('./test/spec/sync/iteration/*.tests.coffee')
+    .pipe(rewrite.stream({replacement: 'BackboneORM.Utils._getTestOptionSets()'}))
+    .pipe(gulp.dest('./test/spec/sync/iteration'))
