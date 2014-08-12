@@ -15,4 +15,5 @@ if stream?.Readable
       return if @ended or @started
       @started = true
       done = (err) => @ended = true; @emit('error', err) if err; @push(null)
+      # TODO: make this backpressure-aware
       @model_type.each @query, ((model, callback) => @push(model); callback()), done

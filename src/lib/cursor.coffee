@@ -120,14 +120,17 @@ module.exports = class Cursor
     @toJSON (err, json) =>
       return callback(err) if err
       return callback(null, null) if @_cursor.$one and not json
-      json = [json] unless _.isArray(json)
+      @_createModelsForJSON(json, callback)
 
-      @prepareIncludes json, (err, json) =>
-        if can_cache = !(@_cursor.$select or @_cursor.$whitelist) # don't cache if we may not have fetched the full model
-          models = (Utils.updateOrNew(item, @model_type) for item in json)
-        else
-          models = ((model = new @model_type(@model_type::parse(item)); model.setPartial(true); model) for item in json)
-        return callback(null, if @_cursor.$one then models[0] else models)
+  _createModelsForJSON: (json, callback) =>
+    json = [json] unless (json_is_array = _.isArray(json))
+
+    @prepareIncludes json, (err, json) =>
+      if can_cache = !(@_cursor.$select or @_cursor.$whitelist) # don't cache if we may not have fetched the full model
+        models = (Utils.updateOrNew(item, @model_type) for item in json)
+      else
+        models = ((model = new @model_type(@model_type::parse(item)); model.setPartial(true); model) for item in json)
+      return callback(null, if @_cursor.$one or not json_is_array then models[0] else models)
 
   toJSON: (callback) ->
     parsed_query = _.extend({}, _.pick(@_cursor, CURSOR_KEYS), @_find)
