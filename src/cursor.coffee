@@ -237,7 +237,7 @@ module.exports = class MemoryCursor extends Cursor
       # TODO: optimize by grouping included keys, fetching once, and then updating all relationships
       # Load the included models
       for model_json in json
-        do (key, model_json) => load_queue.defer (callback) =>
+        do (key, model_json) -> load_queue.defer (callback) ->
           relation.cursor(model_json, key).toJSON (err, related_json) ->
             return callback(err) if err
             # console.log "\nkey: #{key}, model_json: #{JSONUtils.stringify(model_json)}\nrelated_json: #{JSONUtils.stringify(related_json)}"
@@ -252,7 +252,7 @@ module.exports = class MemoryCursor extends Cursor
     key_components = key_path.split('.')
     model_type = @model_type
 
-    next = (err, models_json) =>
+    next = (err, models_json) ->
       return callback(err) if err
       key = key_components.shift()
       key = model_type::idAttribute if key is 'id' # allow for id key override

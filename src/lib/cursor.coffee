@@ -220,7 +220,7 @@ module.exports = class Cursor
     schema = @model_type.schema()
     shared_related_models = {}
 
-    findOrNew = (related_json, reverse_model_type) =>
+    findOrNew = (related_json, reverse_model_type) ->
       related_id = related_json[reverse_model_type::idAttribute]
       unless shared_related_models[related_id]
         if reverse_model_type.cache

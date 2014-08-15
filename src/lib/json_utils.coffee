@@ -8,7 +8,6 @@
 
 _ = require 'underscore'
 Queue = require './queue'
-Utils = require './utils'
 
 module.exports = class JSONUtils
 

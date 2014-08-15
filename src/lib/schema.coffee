@@ -13,7 +13,6 @@ BackboneORM = require '../core'
 One = require '../relations/one'
 Many = require '../relations/many'
 DatabaseURL = require './database_url'
-Utils = require './utils'
 JSONUtils = require './json_utils'
 
 RELATION_VARIANTS =
@@ -118,7 +117,7 @@ module.exports = class Schema
       # @nodoc
       class JoinTable extends Backbone.Model
         model_name: name
-        urlRoot: "#{(new DatabaseURL(_.result(new relation.model_type, 'url'))).format({exclude_table: true})}/#{url}"
+        urlRoot: "#{(new DatabaseURL(_.result(new relation.model_type(), 'url'))).format({exclude_table: true})}/#{url}"
         schema: schema
         sync: relation.model_type.createSync(JoinTable)
     catch

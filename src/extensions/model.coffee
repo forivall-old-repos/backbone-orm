@@ -11,7 +11,6 @@ Backbone = require 'backbone'
 
 Queue = require '../lib/queue'
 Utils = require '../lib/utils'
-DatabaseURL = require '../lib/database_url'
 
 ModelStream = require './model_stream'
 modelEach = require './model_each'
@@ -138,10 +137,10 @@ module.exports = (model_type) ->
     query.$one = true
 
     functions = [
-      ((callback) =>
+      ((callback) ->
         query[key] = {$lte: date}
         model_type.cursor(query).sort("-#{key}").toModels callback),
-      ((callback) =>
+      ((callback) ->
         query[key] = {$gte: date}
         model_type.cursor(query).sort(key).toModels callback)
     ]

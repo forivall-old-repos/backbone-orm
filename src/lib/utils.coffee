@@ -88,7 +88,7 @@ module.exports = class Utils
   # @nodoc
   @findOrGenerateModelName: (model_type) ->
     return model_type::model_name if model_type::model_name
-    if url = _.result(new model_type, 'url')
+    if url = _.result(new model_type(), 'url')
       return model_name if model_name = (new DatabaseURL(url)).modelName()
     return model_type.name if model_type.name
     throw "Could not find or generate model name for #{model_type}"
@@ -203,8 +203,8 @@ module.exports = class Utils
   @modelJSONSave: (model_json, model_type, callback) ->
     model = new Backbone.Model(model_json)
     model._orm_never_cache = true
-    model.urlRoot = =>
-      try url = _.result(new model_type, 'url') catch e
+    model.urlRoot = ->
+      try url = _.result(new model_type(), 'url') catch e
       return url
     model_type::sync 'update', model, Utils.bbCallback callback
 

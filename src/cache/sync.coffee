@@ -51,7 +51,7 @@ class CacheSync
 
   delete: (model, options) ->
     @model_type.cache.destroy(model.id) # remove from the cache
-    @wrapped_sync_fn 'delete', model, bbCallback (err, json) =>
+    @wrapped_sync_fn 'delete', model, bbCallback (err, json) ->
       return options.error(err) if err
       options.success(json)
 
@@ -67,7 +67,7 @@ class CacheSync
 
   destroy: (query, callback) ->
     # TODO: review for optimization
-    @model_type.each _.extend({$each: {limit: DESTROY_BATCH_LIMIT, threads: DESTROY_THREADS}}, query), ((model, callback) => model.destroy callback), callback
+    @model_type.each _.extend({$each: {limit: DESTROY_BATCH_LIMIT, threads: DESTROY_THREADS}}, query), ((model, callback) -> model.destroy callback), callback
 
   ###################################
   # Backbone Cache Sync - Custom Extensions
