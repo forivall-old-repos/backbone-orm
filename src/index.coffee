@@ -22,6 +22,7 @@ publish =
   DatabaseURL: require './lib/database_url'
   Fabricator: require './lib/fabricator'
   MemoryStore: require './cache/memory_store'
+  CacheCursor: require './cache/cursor'
 
   Cursor: require './lib/cursor'
   Schema: require './lib/schema'
