@@ -11,7 +11,7 @@ _ = require 'underscore'
 CacheCursor = require './cursor'
 Schema = require '../lib/schema'
 Utils = require '../lib/utils'
-bbCallback = Utils.bbCallback
+{wrapOptions} = Utils
 
 DESTROY_BATCH_LIMIT = 1000
 DESTROY_THREADS = 100
@@ -30,28 +30,25 @@ class CacheSync
     @wrapped_sync_fn 'read', model, options
 
   create: (model, options) ->
-    @wrapped_sync_fn 'create', model, {
-      success: (json) =>
-        (attributes = {})[@model_type::idAttribute] = json[@model_type::idAttribute]
-        model.set(attributes)
-        if cache_model = @model_type.cache.get(model.id)
-          Utils.updateModel(cache_model, model) if cache_model isnt model
-        else
-          @model_type.cache.set(model.id, model)
-        options.success(json)
-      error: (resp) => options.error?(resp)
-    }
+    # TODO: need to properly handle caching when things like {query: {$template: ...}} are passed to backbone-http
+    @wrapped_sync_fn 'create', model, wrapOptions _.omit(options, 'success', 'error'), (err, json, resp) =>
+      return options.error?(err) if err
+      (attributes = {})[@model_type::idAttribute] = json[@model_type::idAttribute]
+      model.set(attributes)
+      if cache_model = @model_type.cache.get(model.id)
+        Utils.updateModel(cache_model, model) if cache_model isnt model
+      else
+        @model_type.cache.set(model.id, model)
+      options.success(json)
 
   update: (model, options) ->
-    @wrapped_sync_fn 'update', model, {
-      success: (json) =>
-        if cache_model = @model_type.cache.get(model.id)
-          Utils.updateModel(cache_model, model) if cache_model isnt model
-        else
-          @model_type.cache.set(model.id, model)
-        options.success(json)
-      error: (resp) => options.error?(resp)
-    }
+    @wrapped_sync_fn 'update', model, wrapOptions _.omit(options, 'success', 'error'), (err, json, resp) =>
+      return options.error?(err) if err
+      if cache_model = @model_type.cache.get(model.id)
+        Utils.updateModel(cache_model, model) if cache_model isnt model
+      else
+        @model_type.cache.set(model.id, model)
+      options.success(json)
 
   delete: (model, options) ->
     @model_type.cache.destroy(model.id) # remove from the cache
